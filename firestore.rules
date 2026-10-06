@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isTenantOwner(tenantId) {
+      return isAuthenticated() && request.auth.uid == tenantId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Raiz dos tenants (Barbeiros)
+    match /tenants/{tenantId} {
+      allow get, list: if true;
+      allow create: if isAuthenticated() && request.auth.uid == tenantId;
+      allow update, delete: if isTenantOwner(tenantId);
+
+      // Subcoleção de Serviços
+      match /services/{serviceId} {
+        allow get, list: if true;
+        allow create, update, delete: if isTenantOwner(tenantId);
+      }
+
+      // Subcoleção de Agendamentos
+      match /appointments/{appointmentId} {
+        // Clientes podem criar agendamentos e ler detalhes
+        allow create: if true;
+        allow get: if true;
+        allow list: if isTenantOwner(tenantId);
+        allow update, delete: if isTenantOwner(tenantId);
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "entities": {
+    "Tenant": {
+      "title": "Tenant",
+      "description": "Perfil do barbeiro autônomo e estabelecimento",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único do tenant ou UID do Firebase Auth" },
+        "name": { "type": "string", "description": "Nome completo do barbeiro" },
+        "barbershopName": { "type": "string", "description": "Nome da barbearia" },
+        "email": { "type": "string", "format": "email", "description": "E-mail do barbeiro" },
+        "phone": { "type": "string", "description": "Telefone / WhatsApp" },
+        "slug": { "type": "string", "description": "Slug público único para URL" },
+        "bio": { "type": "string", "description": "Biografia e apresentação" },
+        "address": { "type": "string", "description": "Endereço físico" },
+        "instagram": { "type": "string", "description": "Perfil do Instagram" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Data de criação" }
+      },
+      "required": ["id", "name", "barbershopName", "email", "phone", "slug"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Serviço oferecido pelo barbeiro",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID do serviço" },
+        "tenantId": { "type": "string", "description": "ID do tenant proprietário" },
+        "name": { "type": "string", "description": "Nome do serviço" },
+        "description": { "type": "string", "description": "Descrição detalhada" },
+        "durationMinutes": { "type": "number", "description": "Duração em minutos" },
+        "price": { "type": "number", "description": "Preço em Reais (BRL)" },
+        "category": { "type": "string", "description": "Categoria do serviço" },
+        "isActive": { "type": "boolean", "description": "Status ativo" },
+        "isPublished": { "type": "boolean", "description": "Visibilidade pública" }
+      },
+      "required": ["id", "tenantId", "name", "durationMinutes", "price"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Agendamento de atendimento de cliente",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID do agendamento" },
+        "tenantId": { "type": "string", "description": "ID do tenant" },
+        "clientName": { "type": "string", "description": "Nome do cliente" },
+        "clientPhone": { "type": "string", "description": "Telefone do cliente" },
+        "clientNotes": { "type": "string", "description": "Observações adicionais" },
+        "serviceId": { "type": "string", "description": "ID do serviço reservado" },
+        "serviceName": { "type": "string", "description": "Nome do serviço" },
+        "servicePrice": { "type": "number", "description": "Valor cobrado" },
+        "serviceDuration": { "type": "number", "description": "Duração em minutos" },
+        "date": { "type": "string", "description": "Data no formato YYYY-MM-DD" },
+        "time": { "type": "string", "description": "Hora de início no formato HH:MM" },
+        "endTime": { "type": "string", "description": "Hora de término no formato HH:MM" },
+        "status": {
+          "type": "string",
+          "enum": ["pendente", "confirmado", "concluido", "cancelado"],
+          "description": "Estado atual do agendamento"
+        },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp de criação" }
+      },
+      "required": ["id", "tenantId", "clientName", "clientPhone", "serviceName", "date", "time", "status"]
+    }
+  },
+  "firestore": {
+    "/tenants/{tenantId}": {
+      "schema": { "$ref": "Tenant" },
+      "description": "Documento do perfil de cada barbeiro"
+    },
+    "/tenants/{tenantId}/services/{serviceId}": {
+      "schema": { "$ref": "Service" },
+      "description": "Subcoleção de catálogo de serviços do barbeiro"
+    },
+    "/tenants/{tenantId}/appointments/{appointmentId}": {
+      "schema": { "$ref": "Appointment" },
+      "description": "Subcoleção de agendamentos de clientes"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "AuraBarber SaaS - Plataforma de Agendamento para Barbeiros",
+  "description": "Plataforma multi-tenant de agendamento premium para barbeiros autônomos com gestão de serviços, horários, prevenção de conflitos e área pública mobile-first.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
